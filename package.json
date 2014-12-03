@@ -1,0 +1,32 @@
+{
+  "name": "innkeeper",
+  "version": "1.0.0",
+  "description": "innkeeper =========",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mikko Haapoja <me@mikkoh.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.3.11"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jam3/innkeeper.git"
+  },
+  "keywords": [
+    "socket.io",
+    "room",
+    "private",
+    "data"
+  ],
+  "bugs": {
+    "url": "https://github.com/Jam3/innkeeper/issues"
+  },
+  "homepage": "https://github.com/Jam3/innkeeper"
+}
