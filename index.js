@@ -9,12 +9,8 @@ function innkeeper( settings ) {
 	if( !( this instanceof innkeeper ) )
 		return new innkeeper( settings );
 
-	var s = settings;
+	var s = settings || {};
 
-	if( s.socket === undefined )
-		throw new Error( 'A socket is required in settings when creating an innkeeper' );
-
-	this.socket = s.socket;
 	this.memory = s.redis ? storeRedis( s.redis ) : storeMemory();
 }
 
@@ -26,9 +22,9 @@ innkeeper.prototype = {
 	 * 
 	 * @return {Promise} [description]
 	 */
-	reserve: function() {
+	reserve: function( socket ) {
 
-		return roomFactory.reserve( this.socket, this.memory );
+		return roomFactory.reserve( socket.id, this.memory );
 	},
 
 	/**
@@ -39,9 +35,9 @@ innkeeper.prototype = {
 	 * @param  {String} id the id of a room you want to enter. Think of it as a room number.
 	 * @return {Promise} a promise will be returned which on success will return a room object
 	 */
-	enter: function( id ) {
+	enter: function( socket, id ) {
 
-		return roomFactory.enter( this.socket, this.memory, id );
+		return roomFactory.enter( socket.id, this.memory, id );
 	},
 
 	/**
@@ -51,9 +47,9 @@ innkeeper.prototype = {
 	 * @param  {String} key a key which will be used to enter into a room.
 	 * @return {Promise} a promise will be returned which on success will return a room object
 	 */
-	enterWithKey: function( key ) {
+	enterWithKey: function( socket, key ) {
 
-		return roomFactory.enterWithKey( this.socket, this.memory, key );
+		return roomFactory.enterWithKey( socket.id, this.memory, key );
 	},
 
 	/**
@@ -62,8 +58,8 @@ innkeeper.prototype = {
 	 * @param  {String} id the id of a room you want to leave. Think of it as a room number.
 	 * @return {Promise} a promise will be returned which on success will return a room object if users are still in room null if not
 	 */
-	leave: function( id ) {
+	leave: function( socket, id ) {
 
-		return roomFactory.leave( this.socket, this.memory, id );
+		return roomFactory.leave( socket.id, this.memory, id );
 	}
 };
