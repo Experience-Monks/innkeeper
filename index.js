@@ -1,8 +1,8 @@
 module.exports = innkeeper;
 
 var storeRedis = require( './lib/storeRedis' ),
-	storeMemoery = require( './lib/storeMemory' ),
-	room = require( './lib/room' );
+	storeMemory = require( './lib/storeMemory' ),
+	room = require( './lib/roomFactory' );
 
 function innkeeper( settings ) {
 
@@ -28,7 +28,7 @@ innkeeper.prototype = {
 	 */
 	reserve: function() {
 
-		room.reserve( this.socket, this.memory );
+		return room.reserve( this.socket, this.memory );
 	},
 
 	/**
@@ -41,7 +41,7 @@ innkeeper.prototype = {
 	 */
 	enter: function( id ) {
 
-		room.enter( id, this.socket, this.memory );
+		return room.enter( id, this.socket, this.memory );
 	},
 
 	/**

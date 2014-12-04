@@ -14,7 +14,12 @@
   "dependencies": {
     "bluebird": "^2.3.11"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "express": "^4.10.4",
+    "prova": "^2.1.1",
+    "socket.io": "^1.2.1",
+    "socket.io-client": "^1.2.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Jam3/innkeeper.git"
