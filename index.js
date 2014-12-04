@@ -2,7 +2,7 @@ module.exports = innkeeper;
 
 var storeRedis = require( './lib/storeRedis' ),
 	storeMemory = require( './lib/storeMemory' ),
-	room = require( './lib/roomFactory' );
+	roomFactory = require( './lib/roomFactory' );
 
 function innkeeper( settings ) {
 
@@ -28,7 +28,7 @@ innkeeper.prototype = {
 	 */
 	reserve: function() {
 
-		return room.reserve( this.socket, this.memory );
+		return roomFactory.reserve( this.socket, this.memory );
 	},
 
 	/**
@@ -36,12 +36,12 @@ innkeeper.prototype = {
 	 * which on succeed will return a room object. If the room does not exist the promise
 	 * will fail.
 	 * 
-	 * @param  {String} roomid the id of a room. Think of it as a room number.
+	 * @param  {String} id the id of a room you want to enter. Think of it as a room number.
 	 * @return {Promise} a promise will be returned which on success will return a room object
 	 */
 	enter: function( id ) {
 
-		return room.enter( this.socket, this.memory, id );
+		return roomFactory.enter( this.socket, this.memory, id );
 	},
 
 	/**
@@ -53,6 +53,17 @@ innkeeper.prototype = {
 	 */
 	enterWithKey: function( key ) {
 
-		return room.enterWithKey( key, this.socket, this.memory );
+		return roomFactory.enterWithKey( this.socket, this.memory, key );
+	},
+
+	/**
+	 * Leave a room.
+	 * 
+	 * @param  {String} id the id of a room you want to leave. Think of it as a room number.
+	 * @return {Promise} a promise will be returned which on success will return a room object if users are still in room null if not
+	 */
+	leave: function( id ) {
+
+		return roomFactory.leave( this.socket, this.memory, id );
 	}
 };

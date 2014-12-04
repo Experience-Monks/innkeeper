@@ -10,7 +10,7 @@ var socket, keeper, room, key;
 app.listen( 3333 );
 
 
-test( 'test reserving room', function( t ) {
+test( 'reserving room', function( t ) {
 
 	t.plan( 2 );
 
@@ -34,6 +34,17 @@ test( 'test reserving room', function( t ) {
 	});
 
 	socket = client( 'http://localhost:3333' );
+});
+
+test( 'leaving room', function( t ) {
+
+	t.plan( 1 );
+
+	keeper.leave( room.id )
+	.then( function( room ) {
+
+		t.equal( room, null, 'User left room and no one is in room' );
+	});
 });
 
 test( 'creating a key for a room', function( t ) {
