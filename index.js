@@ -41,7 +41,7 @@ innkeeper.prototype = {
 	 */
 	enter: function( id ) {
 
-		return room.enter( id, this.socket, this.memory );
+		return room.enter( this.socket, this.memory, id );
 	},
 
 	/**
@@ -53,6 +53,6 @@ innkeeper.prototype = {
 	 */
 	enterWithKey: function( key ) {
 
-
+		return room.enterWithKey( key, this.socket, this.memory );
 	}
 };
