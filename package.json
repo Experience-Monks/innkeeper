@@ -12,7 +12,8 @@
   "author": "Mikko Haapoja <me@mikkoh.com>",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^2.3.11"
+    "bluebird": "^2.3.11",
+    "innkeeper-storememory": "^1.0.0"
   },
   "devDependencies": {
     "express": "^4.10.4",
