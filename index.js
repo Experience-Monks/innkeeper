@@ -1,8 +1,8 @@
 module.exports = innkeeper;
 
 var promise = require( 'bluebird' ),
-	room = require( './lib/room' ),
-	storeMemory = require( './lib/storeMemory' );
+	storeMemory = require( 'innkeeper-storememory' ),
+	room = require( './lib/room' );
 
 var rooms = {};
 
@@ -32,7 +32,7 @@ innkeeper.prototype = {
 			   		rooms[ id ] = room( this.memory, id );
 
 			   		return promise.resolve( rooms[ id ] );
-			   }, function() {
+			   }.bind( this ), function() {
 
 			   		return promise.reject( 'could not get a roomID to create a room' );
 			   });
@@ -56,7 +56,7 @@ innkeeper.prototype = {
 			}
 			
 			return promise.resolve( rooms[ id ] );
-		});
+		}.bind( this ));
 	},
 
 	/**
@@ -69,7 +69,7 @@ innkeeper.prototype = {
 	enterWithKey: function( userId, key ) {
 
 		return this.memory.getRoomIdForKey( key )
-		.then( this.enter.bind( this, userId, this.memory ) );
+		.then( this.enter.bind( this, userId ) );
 	},
 
 	/**
