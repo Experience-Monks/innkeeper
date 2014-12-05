@@ -1,65 +1,98 @@
 module.exports = innkeeper;
 
-var storeRedis = require( './lib/storeRedis' ),
-	storeMemory = require( './lib/storeMemory' ),
-	roomFactory = require( './lib/roomFactory' );
+var promise = require( 'bluebird' ),
+	room = require( './lib/room' ),
+	storeMemory = require( './lib/storeMemory' );
+
+var rooms = {};
 
 function innkeeper( settings ) {
 
 	if( !( this instanceof innkeeper ) )
 		return new innkeeper( settings );
 
-	var s = settings || {};
+	settings = settings || {};
 
-	this.memory = s.redis ? storeRedis( s.redis ) : storeMemory();
+	this.memory = settings.memory || storeMemory();
 }
 
 innkeeper.prototype = {
 
 	/**
-	 * the reserve function will reserve a room. Reserve will return a promise which will
-	 * return a room object on success.
+	 * Create a new room object
 	 * 
-	 * @return {Promise} [description]
+	 * @param  {String} userId id of the user whose reserving a room
+	 * @return {Promise} This promise will resolve by sending a room instance
 	 */
-	reserve: function( socket ) {
+	reserve: function( userId ) {
 
-		return roomFactory.reserve( socket.id, this.memory );
+		return this.memory.createRoom( userId )
+			   .then( function( id ) {
+
+			   		rooms[ id ] = room( this.memory, id );
+
+			   		return promise.resolve( rooms[ id ] );
+			   }, function() {
+
+			   		return promise.reject( 'could not get a roomID to create a room' );
+			   });
 	},
 
 	/**
-	 * Using enter you can enter into a room. This method will return a promise
-	 * which on succeed will return a room object. If the room does not exist the promise
-	 * will fail.
-	 * 
-	 * @param  {String} id the id of a room you want to enter. Think of it as a room number.
-	 * @return {Promise} a promise will be returned which on success will return a room object
+	 * Join a room
+	 *
+	 * @param  {String} userId id of the user whose entering a room
+	 * @param {String} id id for the room you'd like to enter
+	 * @return {Promise} This promise will resolve by sending a room instance if the room does not exist it will fail
 	 */
-	enter: function( socket, id ) {
+	enter: function( userId, id ) {
 
-		return roomFactory.enter( socket.id, this.memory, id );
+		return this.memory.joinRoom( userId, id )
+		.then( function( id ) {
+
+			if( rooms[ id ] === undefined ) {
+
+				rooms[ id ] = room( this.memory, id );	
+			}
+			
+			return promise.resolve( rooms[ id ] );
+		});
 	},
 
 	/**
-	 * Enter a room with a key instead of a roomid. Key's are shorter than roomid's
-	 * so it is much nicer for a user on the frontend to enter with.
-	 * 
-	 * @param  {String} key a key which will be used to enter into a room.
-	 * @return {Promise} a promise will be returned which on success will return a room object
+	 * Join a room with a key
+	 *
+	 * @param  {String} userId id of the user whose entering a room
+	 * @param {String} key key used for a room
+	 * @return {Promise} This promise will resolve by sending a room instance if the room does not exist it will fail
 	 */
-	enterWithKey: function( socket, key ) {
+	enterWithKey: function( userId, key ) {
 
-		return roomFactory.enterWithKey( socket.id, this.memory, key );
+		return this.memory.getRoomIdForKey( key )
+		.then( this.enter.bind( this, userId, this.memory ) );
 	},
 
 	/**
 	 * Leave a room.
 	 * 
-	 * @param  {String} id the id of a room you want to leave. Think of it as a room number.
-	 * @return {Promise} a promise will be returned which on success will return a room object if users are still in room null if not
+	 * @param  {String} userId id of the user whose leaving a room
+	 * @param  {String} id id for the room you'd like to leave
+	 * @return {Promise} When this promise resolves it will return a room object if the room still exists and null if not
 	 */
-	leave: function( socket, id ) {
+	leave: function( userId, id ) {
 
-		return roomFactory.leave( socket.id, this.memory, id );
+		return this.memory.leaveRoom( userId, id )
+		.then( function( numUsers ) {
+
+			if( numUsers == 0 ) {
+
+				delete rooms[ id ];
+				
+				return promise.resolve( null );
+			} else {
+
+				return promise.resolve( rooms[ id ] );
+			}
+		});
 	}
 };
