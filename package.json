@@ -25,8 +25,8 @@
     "url": "https://github.com/Jam3/innkeeper.git"
   },
   "keywords": [
-    "socket.io",
     "room",
+    "session",
     "private",
     "data"
   ],
