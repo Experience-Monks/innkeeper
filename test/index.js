@@ -1,6 +1,6 @@
-var test = require( 'prova' ),
-	innkeeper = require( './..' ),
-	Room = require( '../lib/room' );
+var test = require( 'tape' ),
+		innkeeper = require( './..' ),
+		Room = require( '../lib/room' );
 
 var ID_1 = 'id1',
 	ID_2 = 'id2',

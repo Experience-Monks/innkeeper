@@ -13,13 +13,12 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.3.11",
-    "innkeeper-storememory": "^1.0.0",
-    "prova": "^2.1.1"
+    "innkeeper-storememory": "^1.0.0"
   },
   "devDependencies": {
     "express": "^4.10.4",
     "forkfriend": "0.0.7",
-    "tape": "^3.0.3"
+    "tape": "^3.5.0"
   },
   "repository": {
     "type": "git",

@@ -1,8 +1,8 @@
 module.exports = innkeeper;
 
-var promise = require( 'bluebird' ),
-	storeMemory = require( 'innkeeper-storememory' ),
-	room = require( './lib/room' );
+var promise = require( 'bluebird' );
+var storeMemory = require( 'innkeeper-storememory' );
+var room = require( './lib/room' );
 
 var rooms = {};
 
