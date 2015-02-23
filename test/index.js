@@ -26,7 +26,15 @@ test( 'reserving room', function( t ) {
 
 test( 'leaving room', function( t ) {
 
-	t.plan( 1 );
+	t.plan( 3 );
+
+	room.on( 'user', function( info ) {
+
+		room.removeAllListeners( 'user' );
+
+		t.equal( info.action, 'leave', 'action was correct' );
+		t.equal( info.user, ID_1, 'user was correct' );
+	});
 
 	keeper.leave( ID_1, room.id )
 	.then( function( room ) {
@@ -66,7 +74,17 @@ test( 'creating a key for a room', function( t ) {
 
 test( 'entering room with an id', function( t ) {
 
-	t.plan( 2 );
+	t.plan( 6 );
+
+	room.on( 'user', function( info ) {
+
+		room.removeAllListeners( 'user' );
+
+		t.equal( info.action, 'join', 'action was correct' );
+		t.equal( info.user, ID_2, 'user was correct' );
+		t.ok( info.users.indexOf( ID_1 ) > -1, 'ID_1 was in room' );
+		t.ok( info.users.indexOf( ID_2 ) > -1, 'ID_2 was in room' );
+	});
 
 	keeper.enter( ID_2, room.id )
 	.then( function( joinedRoom ) {
