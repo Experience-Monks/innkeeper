@@ -1,6 +1,6 @@
 {
   "name": "innkeeper",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "innkeeper provides servers group/room management using an memory store you can define",
   "main": "index.js",
   "directories": {
