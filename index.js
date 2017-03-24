@@ -73,6 +73,26 @@ innkeeper.prototype = {
 	},
 
 	/**
+	 * Join an available public room or create one
+	 *
+	 * @param  {String} userId id of the user whose entering a room
+	 * @return {Promise} This promise will resolve by sending a room instance
+	 */
+	enterPublicRoom: function( userId ) {
+		return this.memory.getPublicRoom()
+		.then( 
+			this.enter.bind( this, userId ),
+			function(userId) {
+				this.reserve( userId ).then(function(room) {
+					room.makePublic().then(function() {
+						return promise.resolve( room );
+					});
+				}.bind(this))
+			}.bind(this,userId)
+		)
+	},
+
+	/**
 	 * Leave a room.
 	 * 
 	 * @param  {String} userId id of the user whose leaving a room
