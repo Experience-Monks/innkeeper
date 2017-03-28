@@ -22,6 +22,7 @@ innkeeper.prototype = {
 	 * Create a new room object
 	 * 
 	 * @param  {String} userId id of the user whose reserving a room
+	 * @param  {Boolean} isPublic whether the room your are creating is publicly available
 	 * @return {Promise} This promise will resolve by sending a room instance
 	 */
 	reserve: function( userId, isPublic ) {
