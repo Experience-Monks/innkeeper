@@ -25,21 +25,14 @@ innkeeper.prototype = {
 	 * @param  {Boolean} isPublic whether the room your are creating is publicly available
 	 * @return {Promise} This promise will resolve by sending a room instance
 	 */
-	reserve: function( userId, isPublic ) {
+	reserve: function( userId ) {
 
 		return this.memory.createRoom( userId )
 			   .then( function( id ) {
 
 			   		rooms[ id ] = room( this.memory, id );
-			   		if ( isPublic ) {
-
-			   			return rooms[ id ].makePublic().then(function() {
-			   				return promise.resolve( rooms[ id ] );
-			   			});
-			   		} else {
-							
-							return promise.resolve( rooms[ id ] );
-			   		}
+			   			
+						return promise.resolve( rooms[ id ] );
 			   }.bind( this ), function() {
 
 			   		return promise.reject( 'could not get a roomID to create a room' );
