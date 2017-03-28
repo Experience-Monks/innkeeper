@@ -24,14 +24,21 @@ innkeeper.prototype = {
 	 * @param  {String} userId id of the user whose reserving a room
 	 * @return {Promise} This promise will resolve by sending a room instance
 	 */
-	reserve: function( userId ) {
+	reserve: function( userId, isPublic ) {
 
 		return this.memory.createRoom( userId )
 			   .then( function( id ) {
 
 			   		rooms[ id ] = room( this.memory, id );
+			   		if ( isPublic ) {
 
-			   		return promise.resolve( rooms[ id ] );
+			   			return rooms[ id ].makePublic().then(function() {
+			   				return promise.resolve( rooms[ id ] );
+			   			});
+			   		} else {
+							
+							return promise.resolve( rooms[ id ] );
+			   		}
 			   }.bind( this ), function() {
 
 			   		return promise.reject( 'could not get a roomID to create a room' );
@@ -76,7 +83,7 @@ innkeeper.prototype = {
 	 * Join an available public room or create one
 	 *
 	 * @param  {String} userId id of the user whose entering a room
-	 * @return {Promise} This promise will resolve by sending a room instance
+	 * @return {Promise} This promise will resolve by sending a room instance, or reject if no public rooms available
 	 */
 	enterPublic: function( userId ) {
 		return this.memory.getPublicRoom()
@@ -84,11 +91,7 @@ innkeeper.prototype = {
 			if ( roomId ) {
 				return this.enter( userId, roomId);
 			} else {
-				return this.reserve( userId ).then(function(room) {
-					return room.makePublic().then(function() {
-						return promise.resolve( room );
-					});
-				}.bind(this));
+				return promise.reject( 'Could not find a public room' );
 			}
 		}.bind(this));
 	},
