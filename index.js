@@ -88,7 +88,7 @@ innkeeper.prototype = {
 
 				// remove all listeners from room since there should be one
 				rooms[ id ].removeAllListeners();
-
+				rooms[ id ].setPrivate();
 				delete rooms[ id ];
 				
 				return promise.resolve( null );
