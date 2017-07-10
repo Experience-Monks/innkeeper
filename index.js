@@ -5,6 +5,7 @@ var storeMemory = require( 'innkeeper-storememory' );
 var room = require( './lib/room' );
 
 var rooms = {};
+var userRooms = {}
 
 function innkeeper( settings ) {
 
@@ -31,7 +32,8 @@ innkeeper.prototype = {
 			   .then( function( id ) {
 
 			   		rooms[ id ] = room( this.memory, id );
-			   			
+			   		userRooms[ userId ] = rooms[ id ];
+
 						return promise.resolve( rooms[ id ] );
 			   }.bind( this ), function() {
 
@@ -56,6 +58,8 @@ innkeeper.prototype = {
 				rooms[ id ] = room( this.memory, id );	
 			}
 			
+			userRooms[ userId ] = rooms[ id ];
+
 			return promise.resolve( rooms[ id ] );
 		}.bind( this ));
 	},
@@ -89,6 +93,16 @@ innkeeper.prototype = {
 			}
 		}.bind(this));
 	},
+	
+	/**
+	 * Retrieves the room of a peticular user
+	 *
+	 * @param  {String} userId id of the user whose entering a room
+	 * @return {Room} This will return the room of requested user or null if not in a room
+	 */
+	getRoom: function( userId ) {
+		return userRooms[ userId ];
+	},
 
 	/**
 	 * Leave a room.
@@ -105,9 +119,11 @@ innkeeper.prototype = {
 			if( numUsers == 0 ) {
 
 				// remove all listeners from room since there should be one
-				rooms[ id ].removeAllListeners();
-				rooms[ id ].setPrivate();
-				delete rooms[ id ];
+				if (rooms[ id ]) {
+					rooms[ id ].removeAllListeners();
+					rooms[ id ].setPrivate();
+					delete rooms[ id ];
+				}
 				
 				return promise.resolve( null );
 			} else {
